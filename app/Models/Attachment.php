@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Message;
 
 class Attachment extends Model
 {
@@ -13,7 +14,7 @@ class Attachment extends Model
   
     public function attachable()
     {
-        return $this->morphTo();
+        return $this->morphTo(Message::class , 'attachable');
         
     }
 

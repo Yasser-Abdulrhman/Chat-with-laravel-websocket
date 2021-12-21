@@ -5304,7 +5304,8 @@ __webpack_require__.r(__webpack_exports__);
       newMessage: '',
       users: [],
       activeUser: false,
-      typingTimer: false
+      typingTimer: false,
+      Images: ''
     };
   },
   created: function created() {
@@ -5339,6 +5340,20 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('messages').then(function (response) {
         _this2.messages = response.data;
+      });
+    },
+    uploadFile: function uploadFile() {
+      this.Images = this.$refs.file.files[0];
+    },
+    submitFile: function submitFile() {
+      var formData = new FormData();
+      formData.append('file', this.Images); // console.log(formData);
+
+      var headers = {
+        'Content-Type': 'multipart/form-data'
+      };
+      axios.post('messages', formData, {
+        headers: headers
       });
     },
     sendMessage: function sendMessage() {
@@ -34246,7 +34261,20 @@ var render = function () {
                   _vm._v(
                     "\n                            " +
                       _vm._s(message.message) +
-                      "\n                        "
+                      "\n                            "
+                  ),
+                  _c(
+                    "ul",
+                    _vm._l(message.attachments, function (attachment, index) {
+                      return _c("li", { key: index, staticClass: "p-2" }, [
+                        _vm._v(
+                          "\n                                    " +
+                            _vm._s(attachment.path) +
+                            "\n                                    "
+                        ),
+                      ])
+                    }),
+                    0
                   ),
                 ])
               }),
@@ -34300,36 +34328,12 @@ var render = function () {
         _c("div", [
           _c("input", {
             ref: "file",
-            staticClass: "form control",
-            attrs: { name: "attachment", type: "file" },
+            attrs: { type: "file" },
+            on: { change: _vm.uploadFile },
           }),
           _vm._v(" "),
-          _c("button", { on: { click: _vm.sendMessage } }, [
-            _vm._v("Send Image"),
-          ]),
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c("input", {
-            ref: "file",
-            staticClass: "form control",
-            attrs: { name: "attachment", type: "file" },
-          }),
-          _vm._v(" "),
-          _c("button", { on: { click: _vm.sendMessage } }, [
-            _vm._v("Send Video"),
-          ]),
-        ]),
-        _vm._v(" "),
-        _c("div", [
-          _c("input", {
-            ref: "file",
-            staticClass: "form control",
-            attrs: { name: "attachment", type: "file" },
-          }),
-          _vm._v(" "),
-          _c("button", { on: { click: _vm.sendMessage } }, [
-            _vm._v("Send Audio"),
+          _c("button", { on: { click: _vm.submitFile } }, [
+            _vm._v("Send Image "),
           ]),
         ]),
       ]),

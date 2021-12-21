@@ -10,6 +10,12 @@
                             <li class="p-2" v-for="(message , index) in messages" :key="index">
                                 <strong>{{message.user.name}}</strong>
                                 {{message.message}}
+                                <ul>
+                                    <li class="p-2" v-for="(attachment , index) in message.attachments" :key="index">
+                                        {{attachment.path}}
+                                        <!-- <img src="/var/www/html/chat/storage/app/files/3s18FkPJkINGBYrOJCihFzysulhaSLdvq24cbUho.jpg"> -->
+                                    </li>
+                                </ul>
                             </li>
                         </ul>
                     </div>
@@ -23,18 +29,12 @@
                    
                 </div>
                 <span class="text-muted" v-if="activeUser"> {{activeUser.name}} is typing...</span>
-                    <div>
-                        <input class="form control" name="attachment" type="file" ref="file">
-                        <button @click="sendMessage">Send Image</button>
-                    </div>
-                    <div>
-                        <input class="form control" name="attachment" type="file" ref="file">
-                        <button @click="sendMessage">Send Video</button>
-                    </div>
-                     <div>
-                        <input class="form control" name="attachment" type="file" ref="file">
-                        <button @click="sendMessage">Send Audio</button>
-                    </div>
+                 
+                      <div>
+                            <input  type="file" @change="uploadFile" ref="file">
+                            <button @click="submitFile">Send Image </button>
+                     </div>
+               
             </div>
             <div class="col-md-4">
                 <div class="card card-default">
@@ -63,6 +63,7 @@
               users :[],
               activeUser :false,
               typingTimer: false,
+              Images:''
           }  
        },
        created() {
@@ -99,6 +100,16 @@
                this.messages = response.data;
            })
            },
+           uploadFile() {
+                this.Images = this.$refs.file.files[0];
+           },
+            submitFile() {
+                const formData = new FormData();
+                formData.append('file', this.Images);
+                // console.log(formData);
+                const headers = { 'Content-Type': 'multipart/form-data' };
+                axios.post('messages', formData, { headers });
+            },
            sendMessage() {
                  this.messages.push({
                     user: this.user,

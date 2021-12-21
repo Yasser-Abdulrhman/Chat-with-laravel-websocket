@@ -20,23 +20,25 @@ class ChatController extends Controller
     }
     public function fetchMessages()
     {
-        return Message::with('user','attachments')->get();
+        return Message::with('user' ,'attachments')->get();
     }
     public function sendMessage(Request $request)
     {
        $message = auth()->user()->messages()->create([   
-         'message' => $request->message ? $request->message : 'attachment',
+         'message' => $request->message ? $request->message : 'image',
+         'type' => 'image'
        ]);
-       if($request->has('attachment')){
-           dd('ff');
-        $path = Storage::putFile('files', $request->file('attachment'));
-        $url = Storage::url($path);
-            $message->create([
+
+
+       if($request->has('file')){
+        $path = Storage::putFile('files', $request->file('file'));
+        $url = base_path().'/storage/app/'.$path;
+            $message->attachments()->create([
                 'path' => $url
             ]);
         }
 
-        broadcast(new MessageSent($message->load('user','attachments')))->toOthers();
+        broadcast(new MessageSent($message->load('user' ,'attachments')))->toOthers();
         return ['status' => 'success'];
     }
 }
