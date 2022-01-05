@@ -4,15 +4,19 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Message;
+use App\Models\User;
 use App\Models\Attachment;
 use App\Events\MessageSent;
 use Illuminate\Support\Facades\Storage;
+use Auth;
+
 
 class ChatController extends Controller
 {
     public function __constructor()
     {
-        $this->middleware('auth');
+        // $this->middleware('auth');
+        $this->middleware('auth:api');
     }
     public function index()
     {
@@ -24,10 +28,12 @@ class ChatController extends Controller
     }
     public function sendMessage(Request $request)
     {
+
        $message = auth()->user()->messages()->create([   
          'message' => $request->message ? $request->message : 'image',
          'type' => 'image'
        ]);
+
 
 
        if($request->has('file')){
